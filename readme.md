@@ -45,7 +45,7 @@ We believe postpartum care doesn’t end at the hospital doors. Our mission is t
 Figma-designed UI built around softness, clarity, and accessibility.  
 View designs in the `/design` folder for previews and style references.
 
-![Navbar Concept](./design/user%20navbar.png)
+![Profile Page](./design/High_Fidelity/Profile%20Page%20Mom-1.png)
 
 ---
 
