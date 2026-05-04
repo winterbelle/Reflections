@@ -51,7 +51,7 @@ View designs in the `/design` folder for previews and style references.
 
 ## 👩‍💻 Built By
 
-Created by **Blanca**, a full-time software dev student, full-time mom of two, and founder of the *WinterBelle Project* — a digital studio concept focused on emotionally intelligent spaces and community-driven tech.
+Created by **Blanca**, a full-time Information Science student, full-time mom of two, and founder of *WinterBelle Studio* — a digital studio concept focused on emotionally intelligent spaces and community-driven tech.
 
 > "This isn't just a project. It's the platform I wish existed when I needed it most."
 
