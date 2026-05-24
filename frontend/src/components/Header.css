@@ -1,0 +1,98 @@
+.header-container {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    margin: 0 1rem;
+}
+
+#left-header, #right-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+#left-header {
+    justify-self: start;
+}
+
+#center-header {
+    justify-self: center;
+}
+
+#right-header {
+    justify-self: end;
+    gap: 0.50rem;
+}
+
+#left-header .reflections-logo {
+    width: 96px;
+    height: 96px;
+}
+
+#center-header {
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.header-link {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.image-link {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.image-link img{
+    width: 40px;
+    height: 40px;
+}
+
+#profile-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+}
+
+.search-bar {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    width: 200px;
+}
+
+@media (max-width: 1280px) {
+    .header-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        justify-items: center;
+    }
+
+    #left-header,
+    #center-header,
+    #right-header {
+        justify-content: center;
+        justify-self: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    #left-header {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .search-bar {
+        max-width: 300px;
+    }
+}
