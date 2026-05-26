@@ -93,3 +93,33 @@ exports.deletePost = (req, res) => {
   posts.splice(postIndex, 1);
   res.status(204).send();
 };
+
+exports.addCommentToPost = (req, res)=> {
+  const postId = parseInt(req.params.id);
+  const post = posts.find((post)=> post.id === postId);
+
+  if(!post){
+    return res.status(404).json({message: "Post not found"});
+  }
+
+  const {content} = req.body;
+
+  if(!content) {
+    return res.status(400).json({message: "Comment content is required"});
+  }
+
+  const newComment = {
+    id: post.comments.length + 1,
+    content,
+    author: req.user.email,
+    authorEmail: req.user.email,
+    date: new Date().toISOString().split("T")[0],
+
+    // replies will be added later
+    replies:[]
+  };
+
+  post.comments.push(newComment);
+
+  res.status(201).json(newComment);
+}

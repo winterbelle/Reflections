@@ -18,5 +18,8 @@ router.put('/:id', authMiddleware, postsController.updatePost);
 // Delete a post
 router.delete('/:id', authMiddleware, postsController.deletePost);
 
+// PROTECTED POSTS
+router.post('/:id/comments', authMiddleware, postsController.addCommentToPost)
+
 
 module.exports = router;
