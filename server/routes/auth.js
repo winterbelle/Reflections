@@ -10,6 +10,7 @@ const router = express.Router();
 
 // Import bcrypt for password hashing
 const bcrypt = require("bcrypt");
+const authMiddleware = require("../middleware/authMiddleware");
 const jwt = require("jsonwebtoken");
 
 // Temporary in-memory users array
@@ -142,7 +143,7 @@ router.post("/login", async (req, res) => {
         id: user.id,
         email: user.email,
       },
-      process.env.JWT_SECRET || "dev_secret_key",
+      process.env.JWT_SECRET,
       {
         expiresIn: "1h",
       },
@@ -164,6 +165,21 @@ router.post("/login", async (req, res) => {
       message: "Server error",
     });
   }
+});
+
+/*
+========================================
+GET /auth/profile
+Purpose:
+Protected route that only works with a valid JWT
+========================================
+*/
+
+router.get("/profile", authMiddleware, (req, res) => {
+  res.status(200).json({
+    message: "Protected profile route accessed successfully",
+    user: req.user,
+  });
 });
 
 module.exports = router;
