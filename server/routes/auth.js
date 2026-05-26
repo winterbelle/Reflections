@@ -3,6 +3,8 @@
 // Handles:
 // - user registration
 // - user login
+// - demo/admin accounts
+// - JWT tokens with user roles
 // ========================================
 
 const express = require("express");
@@ -17,21 +19,31 @@ const jwt = require("jsonwebtoken");
 // Later this will become a real database
 const users = [];
 
-// Demo account
-// Allows visitors, recruiters, and judges
-// to explore the application without signing up
-const createDemoUser = async () => {
-  const hashedPassword = await bcrypt.hash("demo123", 10);
+// Demo accounts
+// Allows visitors, recruiters, judges, and admins
+// to explore the application with different permissions
+const createDemoUsers = async () => {
+  const demoHashedPassword = await bcrypt.hash("demo123", 10);
+  const adminHashedPassword = await bcrypt.hash("admin123", 10);
 
   users.push({
     id: 1,
     username: "Demo Parent",
     email: "demo@kindredparenting.com",
-    password: hashedPassword,
+    password: demoHashedPassword,
+    role: "user",
+  });
+
+  users.push({
+    id: 2,
+    username: "Admin User",
+    email: "admin@kindredparenting.com",
+    password: adminHashedPassword,
+    role: "admin",
   });
 };
 
-createDemoUser();
+createDemoUsers();
 
 /*
 ========================================
@@ -73,6 +85,7 @@ router.post("/register", async (req, res) => {
       username,
       email,
       password: hashedPassword,
+      role: "user",
     };
 
     // Save user to temporary array
@@ -85,6 +98,7 @@ router.post("/register", async (req, res) => {
         id: newUser.id,
         username: newUser.username,
         email: newUser.email,
+        role: newUser.role,
       },
     });
   } catch (error) {
@@ -142,6 +156,7 @@ router.post("/login", async (req, res) => {
       {
         id: user.id,
         email: user.email,
+        role: user.role,
       },
       process.env.JWT_SECRET,
       {
@@ -156,6 +171,7 @@ router.post("/login", async (req, res) => {
         id: user.id,
         username: user.username,
         email: user.email,
+        role: user.role,
       },
     });
   } catch (error) {
