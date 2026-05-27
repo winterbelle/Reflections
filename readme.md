@@ -1,6 +1,6 @@
 # 🌿 Reflections
 
-![Reflections Logo](./assets/Reflections-Logo.png)
+![Reflections Logo](./frontend/src/assets/Reflections-Logo.png)
 
 **A safe space for parents navigating the emotional, physical, and mental shifts after childbirth.**  
 
@@ -49,11 +49,15 @@ View designs in the `/design` folder for previews and style references.
 
 ---
 
-## 👩‍💻 Built By
+## 👩‍💻👩🏾‍💻👨🏻‍💻 Built By
 
-Created by **Blanca**, a full-time Information Science student, full-time mom of two, and founder of *WinterBelle Studio* — a digital studio concept focused on emotionally intelligent spaces and community-driven tech.
+**Blanca**, a full-time Information Science student, full-time mom of two, and founder of *WinterBelle Studio* — a digital studio concept focused on emotionally intelligent spaces and community-driven tech.
 
 > "This isn't just a project. It's the platform I wish existed when I needed it most."
+
+**Jennifer**
+
+**Santiago**
 
 ---
 
