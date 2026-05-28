@@ -1,7 +1,6 @@
 import { useState } from "react";
 import "./Chatbot.css";
 
-
 function Chatbot() {
   // Stores all chatbot conversation messages
   const [messages, setMessages] = useState([]);
@@ -92,42 +91,47 @@ function Chatbot() {
 
       {/* Only render chatbot window if open */}
       {isChatOpen && (
-        <div className="chatbot-window">
-          <h2>KindredParenting Chatbot</h2>
-
-          {/* Displays the chatbot conversation */}
-          <div className="chatbot-messages">
-            {messages.map((message, index) => (
-              <p key={index}>
-                <strong>{message.role}:</strong> {message.content}
-              </p>
-            ))}
-          </div>
-
-          {/* Chat input section */}
-          <form
-            className="chatbot-form"
-            onSubmit={(event) => {
-              // Prevents page refresh
-              event.preventDefault();
-
-              handleSendMessage();
-            }}
+        <div className="chatbot-overlay" onClick={() => setIsChatOpen(false)}>
+          <div
+            className="chatbot-window"
+            onClick={(event) => event.stopPropagation()}
           >
-            <input
-              type="text"
-              placeholder="Ask a parenting question..."
-              value={input}
-              onChange={(event) => setInput(event.target.value)}
-            />
+            <h2>KindredParenting Chatbot</h2>
 
-            <button type="submit" disabled={isLoading}>
-              Send
-            </button>
-          </form>
+            {/* Displays the chatbot conversation */}
+            <div className="chatbot-messages">
+              {messages.map((message, index) => (
+                <p key={index}>
+                  <strong>{message.role}:</strong> {message.content}
+                </p>
+              ))}
+            </div>
 
-          {/* Loading feedback while waiting for chatbot */}
-          {isLoading && <p>Chatbot is thinking...</p>}
+            {/* Chat input section */}
+            <form
+              className="chatbot-form"
+              onSubmit={(event) => {
+                // Prevents page refresh
+                event.preventDefault();
+
+                handleSendMessage();
+              }}
+            >
+              <input
+                type="text"
+                placeholder="Ask a parenting question..."
+                value={input}
+                onChange={(event) => setInput(event.target.value)}
+              />
+
+              <button type="submit" disabled={isLoading}>
+                Send
+              </button>
+            </form>
+
+            {/* Loading feedback while waiting for chatbot */}
+            {isLoading && <p>Chatbot is thinking...</p>}
+          </div>
         </div>
       )}
     </div>
