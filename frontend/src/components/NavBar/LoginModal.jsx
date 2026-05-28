@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function LoginModal({ onClose, onLoginSuccess }) {
+function LoginModal({ onClose, onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -31,7 +31,7 @@ const loginUser = async (loginEmail, loginPassword)=>{
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
 
-        onLoginSuccess(data.user);
+        onLogin(data.user);
 
         setMessage("Login successful!");
 
