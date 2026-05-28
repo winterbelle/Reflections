@@ -10,6 +10,11 @@ function App() {
     <>
       <BrowserRouter>
         <Header />
+        
+      <Routes>
+        <Route path="/" element={<h1>Home</h1>} />
+        <Route path="/community" element={<Community />} />
+      </Routes>
       </BrowserRouter>
     </>
   )

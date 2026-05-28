@@ -49,8 +49,8 @@ function NavBar() {
           <NavLink to="/" className="nav-link">
             Home
           </NavLink>
-          <NavLink to="/communities" className="nav-link">
-            Communities
+          <NavLink to="/community" className="nav-link">
+            Community
           </NavLink>
           <NavLink to="/my-space" className="nav-link">
             My Space
