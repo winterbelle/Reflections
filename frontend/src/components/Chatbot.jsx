@@ -1,4 +1,6 @@
 import { useState } from "react";
+import "./Chatbot.css";
+
 
 function Chatbot() {
   // Stores all chatbot conversation messages
@@ -6,6 +8,9 @@ function Chatbot() {
 
   // Stores the current user input
   const [input, setInput] = useState("");
+
+  // Controls whether the chatbot window is open
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   // Tracks loading state while waiting for chatbot response
   const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +26,7 @@ function Chatbot() {
       content: input,
     };
 
-    // Clear input after sending
+    // Clear input immediately for better UX
     setInput("");
 
     // Add the user's message to the chat history
@@ -69,41 +74,62 @@ function Chatbot() {
     setIsLoading(false);
   };
 
+  // Toggles chatbot open/closed state
+  const toggleChatbot = () => {
+    setIsChatOpen((prevState) => !prevState);
+  };
+
   return (
-    <div>
-      <h2>KindredParenting Chatbot</h2>
-
-      {/* Displays the chatbot conversation */}
-      <div>
-        {messages.map((message, index) => (
-          <p key={index}>
-            <strong>{message.role}:</strong> {message.content}
-          </p>
-        ))}
-      </div>
-      {/* Chat input section */}
-      <form
-        onSubmit={(event) => {
-          // Prevents full page refresh
-          event.preventDefault();
-
-          handleSendMessage();
-        }}
+    <div className="chatbot-container">
+      {/* Floating button used to open/close chatbot */}
+      <button
+        className="chatbot-toggle-button"
+        type="button"
+        onClick={toggleChatbot}
       >
-        <input
-          type="text"
-          placeholder="Ask a parenting question..."
-          value={input}
-          onChange={(event) => setInput(event.target.value)}
-        />
+        {isChatOpen ? "Close Chat" : "💬 Chat"}
+      </button>
 
-        <button type="submit" disabled={isLoading}>
-          Send
-        </button>
-      </form>
+      {/* Only render chatbot window if open */}
+      {isChatOpen && (
+        <div className="chatbot-window">
+          <h2>KindredParenting Chatbot</h2>
 
-      {/* Loading feedback while waiting for chatbot */}
-      {isLoading && <p>Chatbot is thinking...</p>}
+          {/* Displays the chatbot conversation */}
+          <div className="chatbot-messages">
+            {messages.map((message, index) => (
+              <p key={index}>
+                <strong>{message.role}:</strong> {message.content}
+              </p>
+            ))}
+          </div>
+
+          {/* Chat input section */}
+          <form
+            className="chatbot-form"
+            onSubmit={(event) => {
+              // Prevents page refresh
+              event.preventDefault();
+
+              handleSendMessage();
+            }}
+          >
+            <input
+              type="text"
+              placeholder="Ask a parenting question..."
+              value={input}
+              onChange={(event) => setInput(event.target.value)}
+            />
+
+            <button type="submit" disabled={isLoading}>
+              Send
+            </button>
+          </form>
+
+          {/* Loading feedback while waiting for chatbot */}
+          {isLoading && <p>Chatbot is thinking...</p>}
+        </div>
+      )}
     </div>
   );
 }
