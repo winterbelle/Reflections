@@ -8,6 +8,8 @@ const OpenAI = require("openai");
 
 const router = express.Router();
 
+
+
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -30,6 +32,15 @@ router.post("/", async (req, res) => {
         message: "Message is required",
       });
     }
+
+    // Prevents OpenAI API usage during development/testing
+    //Change CHATBOT_ENABLED to true in the .env when ready to use tokens
+if (process.env.CHATBOT_ENABLED === "false") {
+  return res.status(200).json({
+    reply:
+      "Chatbot is currently running in development mode. Live AI responses are temporarily disabled.",
+  });
+}
 
     const response = await client.responses.create({
       model: "gpt-4.1-mini",
