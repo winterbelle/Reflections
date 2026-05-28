@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router"; 
 import "./Header.css";
-import reflectionsLogo from "../assets/Reflections-Logo.png";
-import chatIcon from "../assets/chat_bubble.png";
-import notificationsIcon from "../assets/notification_bell.png";
-import profileIcon from "../assets/Default-Profile-Female.png";
+import reflectionsLogo from "../../assets/Reflections-Logo.png";
+import chatIcon from "../../assets/chat_bubble.png";
+import notificationsIcon from "../../assets/notification_bell.png";
+import profileIcon from "../../assets/Default-Profile-Female.png";
 import LoginModal from "./LoginModal.jsx";
 
 function NavBar() {
