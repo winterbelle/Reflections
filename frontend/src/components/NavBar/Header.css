@@ -1,0 +1,106 @@
+.navbar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    margin: 0 1rem;
+}
+
+.navbar-left,
+.navbar-right {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.navbar-left {
+    justify-self: start;
+}
+
+.navbar-center {
+    justify-self: center;
+}
+
+.navbar-right {
+    justify-self: end;
+    gap: 0.50rem;
+}
+
+.navbar-left .reflections-logo {
+    width: 96px;
+    height: 96px;
+}
+
+.navbar-center {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.nav-link {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.active-link {
+    font-weight: 700;
+}
+
+.image-link {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.image-link img,
+.icon {
+    width: 40px;
+    height: 40px;
+}
+
+.profile-toggle,
+#profile-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.search-bar {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    width: 200px;
+}
+
+@media (max-width: 1280px) {
+    .navbar {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        justify-items: center;
+    }
+
+    .navbar-left,
+    .navbar-center,
+    .navbar-right {
+        justify-content: center;
+        justify-self: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .navbar-left {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .search-bar {
+        max-width: 300px;
+    }
+}
