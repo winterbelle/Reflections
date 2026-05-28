@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Chatbot.css";
 
 function Chatbot() {
   // Stores all chatbot conversation messages
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(() => {
+    const savedMessages = localStorage.getItem("chatMessages");
+
+    return savedMessages ? JSON.parse(savedMessages) : [];
+  });
 
   // Stores the current user input
   const [input, setInput] = useState("");
@@ -14,6 +18,12 @@ function Chatbot() {
   // Tracks loading state while waiting for chatbot response
   const [isLoading, setIsLoading] = useState(false);
 
+
+
+  //this useEffect saves chatbot messages to localStorage whenever the messages array changes
+  useEffect(() => {
+    localStorage.setItem("chatMessages", JSON.stringify(messages));
+  }, [messages]);
   // Sends the user's message to the backend chatbot route
   const handleSendMessage = async () => {
     // Prevent empty submissions
