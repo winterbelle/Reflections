@@ -1,12 +1,13 @@
-import { useState } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router';
+
 import './App.css'
 import Header from './components/NavBar/Header.jsx'
 import Community from './Pages/community.jsx'
 import PostCard from './components/Posts/PostCard.jsx';
+import Chatbot from './components/Chatbot.jsx';
+
 
 function App() {
-
   return (
     <>
       <BrowserRouter>
@@ -18,9 +19,10 @@ function App() {
 
         <Route path="posts/:id" element={<PostCard />} />
       </Routes>
+      <Chatbot />
       </BrowserRouter>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
