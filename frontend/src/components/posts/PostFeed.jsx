@@ -3,6 +3,7 @@
 
 import React, { useEffect, useState } from "react";
 import PostCard from "./PostCard";
+import PostPreview from "./PostPreview";
 
 const PostFeed = () => {
     const [posts, setPosts] = useState([]);
@@ -24,7 +25,7 @@ const PostFeed = () => {
     return (
         <div className="post-feed">
             {posts.map((post) => (
-                <PostCard key={post.id} post={post} />
+                <PostPreview key={post.id} post={post} />
             ))}
         </div>
     );

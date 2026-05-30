@@ -1,7 +1,7 @@
 // display the community feed
 
 import React from "react";
-import PostFeed from "../components/posts/PostFeed";
+import PostFeed from "../components/Posts/PostFeed";
 
 const Community = () => {
   return (

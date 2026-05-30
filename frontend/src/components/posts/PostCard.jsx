@@ -7,22 +7,46 @@
 import React from "react";
 import { Avatar, Button } from "@mui/material";
 import { formatDistanceToNow } from "date-fns";
+import PostCardHeader from "./PostCardHeader";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 
-const PostCard = ({ post, currentUser }) => {
+const PostCard = ({ currentUser }) => {
+  const { id } = useParams();
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/posts/${id}`);
+        const data = await response.json();
+        setPost(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching post:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchPost();
+  }, [id]);
+
+  //loading while waiting for the post to be fetched
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!post) {
+    return <div>Post not found</div>;
+  }
+
   const isAuthor = currentUser && currentUser.email === post.authorEmail;
   const isAdmin = currentUser && currentUser.role === "admin";
 
   return (
     <div className="post-card">
-      <div className="post-header">
-        <Avatar>{post.author.charAt(0).toUpperCase()}</Avatar>
-        <div className="post-author-info">
-          <span className="post-author">{post.author} </span>
-          <span className="post-date">
-            {formatDistanceToNow(new Date(post.date), { addSuffix: true })}
-          </span>
-        </div>
-      </div>
+      <PostCardHeader post={post} />
       <h2 className="post-title">{post.title}</h2>
       <p className="post-content">{post.content}</p>
       <span className="post-tag">{post.tag}</span>
