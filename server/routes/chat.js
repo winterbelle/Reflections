@@ -76,8 +76,7 @@ Boundaries:
 
 Blog context:
 - If blog/article content is provided, answer using that content first.
-- If no blog content is provided, answer as a general parenting support assistant.
-      `,
+- If no blog content is provided, answer as a general parenting support assistant.`,
         },
         {
           role: "user",
