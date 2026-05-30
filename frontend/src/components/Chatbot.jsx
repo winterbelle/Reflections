@@ -18,8 +18,6 @@ function Chatbot() {
   // Tracks loading state while waiting for chatbot response
   const [isLoading, setIsLoading] = useState(false);
 
-
-
   //this useEffect saves chatbot messages to localStorage whenever the messages array changes
   useEffect(() => {
     localStorage.setItem("chatMessages", JSON.stringify(messages));
@@ -88,6 +86,14 @@ function Chatbot() {
     setIsChatOpen((prevState) => !prevState);
   };
 
+  // Ends the current chat session
+  // Clears messages from state and localStorage
+  const endChat = () => {
+    setMessages([]);
+    localStorage.removeItem("chatMessages");
+    setIsChatOpen(false);
+  };
+
   return (
     <div className="chatbot-container">
       {/* Floating button used to open/close chatbot */}
@@ -107,6 +113,9 @@ function Chatbot() {
             onClick={(event) => event.stopPropagation()}
           >
             <h2>KindredParenting Chatbot</h2>
+            <button type="button" onClick={endChat}>
+              End Chat
+            </button>
 
             {/* Displays the chatbot conversation */}
             <div className="chatbot-messages">
