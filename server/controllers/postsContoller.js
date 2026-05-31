@@ -300,3 +300,75 @@ exports.getCommentsByPostId = async (req, res) => {
     });
   }
 };
+
+exports.deleteComment = async (req, res) => {
+  const { postId, commentId } = req.params;
+
+  // Featured post comments are stored in dummyPosts.js
+  if (postId.startsWith("featured-")) {
+    const post = posts.find((post) => post.id === postId);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    const commentIndex = post.comments.findIndex(
+      (comment) => comment.id === parseInt(commentId)
+    );
+
+    if (commentIndex === -1) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+
+    const comment = post.comments[commentIndex];
+
+    const isOwner = comment.authorEmail === req.user.email;
+    const isAdmin = req.user.role === "admin";
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({
+        message: "You are not allowed to delete this comment",
+      });
+    }
+
+    post.comments.splice(commentIndex, 1);
+
+    return res.status(204).send();
+  }
+
+  try {
+    // Find the database comment first so we can check ownership
+    const existingComment = await db.query(
+      "SELECT * FROM comments WHERE id = $1 AND post_id = $2",
+      [commentId, postId]
+    );
+
+    if (existingComment.rows.length === 0) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+
+    const comment = existingComment.rows[0];
+
+    const isOwner = comment.author === req.user.email;
+    const isAdmin = req.user.role === "admin";
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({
+        message: "You are not allowed to delete this comment",
+      });
+    }
+
+    await db.query("DELETE FROM comments WHERE id = $1 AND post_id = $2", [
+      commentId,
+      postId,
+    ]);
+
+    res.status(204).send();
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Unable to delete comment",
+    });
+  }
+};

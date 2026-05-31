@@ -19,6 +19,8 @@ router.put('/:id', authMiddleware, postsController.updatePost);
 router.delete('/:id', authMiddleware, postsController.deletePost);
  // Get comments for a post
 router.get("/:id/comments", postsController.getCommentsByPostId);
+// Delete a comment from a post
+router.delete("/:postId/comments/:commentId", authMiddleware, postsController.deleteComment);
 
 // PROTECTED POSTS
 router.post('/:id/comments', authMiddleware, postsController.addCommentToPost)
