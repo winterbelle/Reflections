@@ -18,6 +18,10 @@ const PostCard = () => {
   const [commentInput, setCommentInput] = useState("");
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editedCommentContent, setEditedCommentContent] = useState("");
+  const [isEditingPost, setIsEditingPost] = useState(false);
+  const [editedTitle, setEditedTitle] = useState("");
+  const [editedTag, setEditedTag] = useState("");
+  const [editedContent, setEditedContent] = useState("");
   const [loading, setLoading] = useState(true);
 
   // Ensure this component can read which user is logged in
@@ -66,7 +70,7 @@ const PostCard = () => {
     return <div>Post not found</div>;
   }
 
-  const isAuthor = currentUser && currentUser.email === post.authorEmail;
+  const isAuthor = currentUser && currentUser.email === post.author;
   const isAdmin = currentUser && currentUser.role === "admin";
 
   const handleAddComment = async () => {
@@ -177,26 +181,140 @@ const PostCard = () => {
     }
   };
 
+  const handleEditPost = () => {
+    setIsEditingPost(true);
+    setEditedTitle(post.title);
+    setEditedTag(post.tag);
+    setEditedContent(post.content);
+  };
+
+  const handleUpdatePost = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Please log in to edit this post.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/posts/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            title: editedTitle,
+            tag: editedTag,
+            content: editedContent,
+          }),
+        },
+      );
+
+      const updatedPost = await response.json();
+
+      setPost(updatedPost);
+      setIsEditingPost(false);
+    } catch (error) {
+      console.error("Error updating post:", error);
+    }
+  };
+
+  const handleDeletePost = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Please log in to delete this post.");
+      return;
+    }
+
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this post?",
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await fetch(`${import.meta.env.VITE_API_URL}/posts/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      window.location.href = "/community";
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
   return (
     <div className="post-card">
       <PostCardHeader post={post} />
-      <h2 className="post-title">{post.title}</h2>
-      <p className="post-content">{post.content}</p>
-      <span className="post-tag">{post.tag}</span>
+
+      {isEditingPost ? (
+        <div className="edit-post-form">
+          <input
+            type="text"
+            value={editedTitle}
+            onChange={(event) => setEditedTitle(event.target.value)}
+          />
+
+          <input
+            type="text"
+            value={editedTag}
+            onChange={(event) => setEditedTag(event.target.value)}
+          />
+
+          <textarea
+            value={editedContent}
+            onChange={(event) => setEditedContent(event.target.value)}
+          />
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleUpdatePost}
+          >
+            Save Post
+          </Button>
+
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => setIsEditingPost(false)}
+          >
+            Cancel
+          </Button>
+        </div>
+      ) : (
+        <>
+          <h2 className="post-title">{post.title}</h2>
+          <p className="post-content">{post.content}</p>
+          <span className="post-tag">{post.tag}</span>
+        </>
+      )}
+
       {(isAuthor || isAdmin) && (
         <div className="post-actions">
-          <Button variant="outlined" color="primary">
+          <Button variant="outlined" color="primary" onClick={handleEditPost}>
             Edit
           </Button>
-          <Button variant="outlined" color="secondary">
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={handleDeletePost}
+          >
             Delete
           </Button>
         </div>
       )}
+
       <div className="post-interactions">
         {/* Comments are fetched separately so this works for both featured posts and database posts */}
         <h3>Comments ({comments.length})</h3>
-        {/* COMMENTS RENDERED TO THE PAGE */}
+
         {comments.map((comment) => (
           <div key={comment.id} className="comment-card">
             {editingCommentId === comment.id ? (
@@ -237,6 +355,7 @@ const PostCard = () => {
                 >
                   Edit
                 </Button>
+
                 <Button
                   variant="outlined"
                   color="secondary"
@@ -250,7 +369,6 @@ const PostCard = () => {
         ))}
       </div>
 
-      {/* COMMENT INPUT */}
       <div className="add-comment">
         <input
           type="text"
