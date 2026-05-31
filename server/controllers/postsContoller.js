@@ -159,30 +159,54 @@ exports.updatePost = async (req, res) => {
   }
 };
 
-exports.deletePost = (req, res) => {
-  const postId = parseInt(req.params.id);
-  const postIndex = posts.findIndex((p) => p.id === postId);
+exports.deletePost = async (req, res) => {
+  const postId = req.params.id;
 
-  if (postIndex === -1) {
-    return res.status(404).json({ message: "Post not found" });
-  }
-
-  const post = posts[postIndex];
-
-  // A user can delete the post if:
-  // 1. They created the post, OR
-  // 2. They are an admin
-  const isOwner = post.authorEmail === req.user.email;
-  const isAdmin = req.user.role === "admin";
-
-  if (!isOwner && !isAdmin) {
+  // Featured posts are starter/demo content.
+  // They should not be deleted through the API.
+  if (postId.startsWith("featured-")) {
     return res.status(403).json({
-      message: "You are not allowed to delete this post",
+      message: "Featured posts cannot be deleted",
     });
   }
 
-  posts.splice(postIndex, 1);
-  res.status(204).send();
+  try {
+    // First, find the post in PostgreSQL
+    const existingPost = await db.query(
+      "SELECT * FROM posts WHERE id = $1",
+      [postId]
+    );
+
+    if (existingPost.rows.length === 0) {
+      return res.status(404).json({
+        message: "Post not found",
+      });
+    }
+
+    const post = existingPost.rows[0];
+
+    // A user can delete the post if:
+    // 1. They created the post, OR
+    // 2. They are an admin
+    const isOwner = post.author === req.user.email;
+    const isAdmin = req.user.role === "admin";
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({
+        message: "You are not allowed to delete this post",
+      });
+    }
+
+    await db.query("DELETE FROM posts WHERE id = $1", [postId]);
+
+    res.status(204).send();
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Unable to delete post",
+    });
+  }
 };
 
 exports.addCommentToPost = (req, res) => {
