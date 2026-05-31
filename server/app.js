@@ -15,6 +15,8 @@ const postsRouter = require('./routes/posts');
 // Chatbot route
 const chatRouter = require('./routes/chat');
 
+const dbTestRouter = require("./routes/dbTest");
+
 const app = express();
 app.use(cors());
 
@@ -28,6 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
+app.use("/db-test", dbTestRouter);
 
 app.use('/posts', postsRouter);
 
