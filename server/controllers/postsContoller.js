@@ -209,32 +209,94 @@ exports.deletePost = async (req, res) => {
   }
 };
 
-exports.addCommentToPost = (req, res) => {
-  const postId = parseInt(req.params.id);
-  const post = posts.find((post) => post.id === postId);
-
-  if (!post) {
-    return res.status(404).json({ message: "Post not found" });
-  }
-
+exports.addCommentToPost = async (req, res) => {
+  const postId = req.params.id;
   const { content } = req.body;
 
   if (!content) {
     return res.status(400).json({ message: "Comment content is required" });
   }
 
-  const newComment = {
-    id: post.comments.length + 1,
-    content,
-    author: req.user.email,
-    authorEmail: req.user.email,
-    date: new Date().toISOString().split("T")[0],
+  // If the post ID starts with "featured-", it belongs to dummyPosts.js
+  if (postId.startsWith("featured-")) {
+    const post = posts.find((post) => post.id === postId);
 
-    // replies will be added later
-    replies: [],
-  };
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
 
-  post.comments.push(newComment);
+    const newComment = {
+      id: post.comments.length + 1,
+      content,
+      author: req.user.email,
+      authorEmail: req.user.email,
+      date: new Date().toISOString().split("T")[0],
 
-  res.status(201).json(newComment);
+      // replies will be added later
+      replies: [],
+    };
+
+    post.comments.push(newComment);
+
+    return res.status(201).json(newComment);
+  }
+
+  try {
+    // Make sure the database post exists before adding a comment
+    const existingPost = await db.query(
+      "SELECT * FROM posts WHERE id = $1",
+      [postId]
+    );
+
+    if (existingPost.rows.length === 0) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Save the comment to PostgreSQL
+    const result = await db.query(
+      `INSERT INTO comments (post_id, content, author)
+       VALUES ($1, $2, $3)
+       RETURNING *`,
+      [postId, content, req.user.email]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Unable to add comment",
+    });
+  }
+};
+
+exports.getCommentsByPostId = async (req, res) => {
+  const postId = req.params.id;
+
+  // Featured post comments are stored directly inside dummyPosts.js
+  if (postId.startsWith("featured-")) {
+    const post = posts.find((post) => post.id === postId);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    return res.json(post.comments);
+  }
+
+  try {
+    // Get comments connected to this database post
+    const result = await db.query(
+      "SELECT * FROM comments WHERE post_id = $1 ORDER BY date ASC",
+      [postId]
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Unable to get comments",
+    });
+  }
 };
