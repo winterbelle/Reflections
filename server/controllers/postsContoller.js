@@ -1,41 +1,100 @@
 const posts = require("../data/dummyPosts");
+const db = require("../db/db");
 
-exports.getAllPosts = (req, res) => {
-  res.json(posts);
-};
+exports.getAllPosts = async (req, res) => {
+  try {
+    // Get real posts that users created from PostgreSQL
+    const result = await db.query("SELECT * FROM posts ORDER BY date DESC");
 
-exports.getPostById = (req, res) => {
-  const postId = parseInt(req.params.id);
-  const post = posts.find((p) => p.id === postId);
+    // Add source labels so the frontend/backend can tell where each post came from in order to prevent multiple posts from having the same id #
+    const featuredPosts = posts.map((post) => ({
+      ...post,
+      source: "featured",
+    }));
 
-  if (post) {
-    res.json(post);
-  } else {
-    res.status(404).json({ message: "Post not found" });
+    const databasePosts = result.rows.map((post) => ({
+      ...post,
+      source: "database",
+    }));
+
+
+
+    // Combine featured dummy posts with real database posts
+    // I am thinking "Featured posts" will help the site look populated for demo/presentation
+    // Database posts will show real content created by users
+    const allPosts = [...featuredPosts, ...databasePosts];
+
+    res.json(allPosts);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Unable to get posts",
+    });
   }
 };
 
-exports.createPost = (req, res) => {
-  const { title, content, tag} = req.body;
+exports.getPostById = async (req, res) => {
+  const postId = req.params.id;
 
-  if (!title || !content || !tag) {//I removed the author because this will be for the logged in author
+  // Check featured posts first
+  const featuredPost = posts.find(
+    (post) => post.id === postId
+  );
+
+  if (featuredPost) {
+    return res.json(featuredPost);
+  }
+
+  try {
+    // If not a featured post, check PostgreSQL
+    const result = await db.query(
+      "SELECT * FROM posts WHERE id = $1",
+      [postId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        message: "Post not found",
+      });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Unable to get post",
+    });
+  }
+};
+
+exports.createPost = async (req, res) => {
+  const { title, content, tag } = req.body;
+
+  if (!title || !content || !tag) {
+    //I removed the author because this will be for the logged in author
     return res.status(400).json({ message: "All fields are required" });
   }
 
-  const newPost = {
-    id: posts.length + 1,
-    title,
-    content,
-    tag,
-    date: new Date().toISOString().split("T")[0],
-    // The author comes from the logged-in user's JWT.
-    // This prevents users from pretending to be someone else.
-    author: req.user.email,
-    authorEmail: req.user.email,
-  };
+  try {
+    // Save the new post to PostgreSQL
+    // RETURNING * gives us the post that was just created
+    const result = await db.query(
+      `INSERT INTO posts (title, content, tag, author)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [title, content, tag, req.user.email],
+    );
 
-  posts.push(newPost);
-  res.status(201).json(newPost);
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Unable to create post",
+    });
+  }
 };
 
 exports.updatePost = (req, res) => {
@@ -58,7 +117,7 @@ exports.updatePost = (req, res) => {
     });
   }
 
-  const { title, content, tag} = req.body;
+  const { title, content, tag } = req.body;
 
   if (title) post.title = title;
   if (content) post.content = content;
@@ -94,18 +153,18 @@ exports.deletePost = (req, res) => {
   res.status(204).send();
 };
 
-exports.addCommentToPost = (req, res)=> {
+exports.addCommentToPost = (req, res) => {
   const postId = parseInt(req.params.id);
-  const post = posts.find((post)=> post.id === postId);
+  const post = posts.find((post) => post.id === postId);
 
-  if(!post){
-    return res.status(404).json({message: "Post not found"});
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
   }
 
-  const {content} = req.body;
+  const { content } = req.body;
 
-  if(!content) {
-    return res.status(400).json({message: "Comment content is required"});
+  if (!content) {
+    return res.status(400).json({ message: "Comment content is required" });
   }
 
   const newComment = {
@@ -116,10 +175,10 @@ exports.addCommentToPost = (req, res)=> {
     date: new Date().toISOString().split("T")[0],
 
     // replies will be added later
-    replies:[]
+    replies: [],
   };
 
   post.comments.push(newComment);
 
   res.status(201).json(newComment);
-}
+};
