@@ -11,12 +11,18 @@ import PostCardHeader from "./PostCardHeader";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
-const PostCard = ({ currentUser }) => {
+const PostCard = () => {
   const { id } = useParams();
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [commentInput, setCommentInput] = useState("");
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editedCommentContent, setEditedCommentContent] = useState("");
   const [loading, setLoading] = useState(true);
+
+  // Ensure this component can read which user is logged in
+  const savedUser = localStorage.getItem("user");
+  const currentUser = savedUser ? JSON.parse(savedUser) : null;
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -101,6 +107,76 @@ const PostCard = ({ currentUser }) => {
     }
   };
 
+  const handleEditComment = (comment) => {
+    setEditingCommentId(comment.id);
+    setEditedCommentContent(comment.content);
+  };
+
+  const handleUpdateComment = async (commentId) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Please log in to edit a comment.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/posts/${id}/comments/${commentId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            content: editedCommentContent,
+          }),
+        },
+      );
+
+      const updatedComment = await response.json();
+
+      setComments((prevComments) =>
+        prevComments.map((comment) =>
+          comment.id === commentId ? updatedComment : comment,
+        ),
+      );
+
+      setEditingCommentId(null);
+      setEditedCommentContent("");
+    } catch (error) {
+      console.error("Error updating comment:", error);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Please log in to delete a comment.");
+      return;
+    }
+
+    try {
+      await fetch(
+        `${import.meta.env.VITE_API_URL}/posts/${id}/comments/${commentId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      setComments((prevComments) =>
+        prevComments.filter((comment) => comment.id !== commentId),
+      );
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+    }
+  };
+
   return (
     <div className="post-card">
       <PostCardHeader post={post} />
@@ -123,8 +199,53 @@ const PostCard = ({ currentUser }) => {
         {/* COMMENTS RENDERED TO THE PAGE */}
         {comments.map((comment) => (
           <div key={comment.id} className="comment-card">
-            <p>{comment.content}</p>
-            <small>{comment.author}</small>
+            {editingCommentId === comment.id ? (
+              <>
+                <input
+                  type="text"
+                  value={editedCommentContent}
+                  onChange={(event) =>
+                    setEditedCommentContent(event.target.value)
+                  }
+                />
+
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleUpdateComment(comment.id)}
+                >
+                  Save
+                </Button>
+
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => setEditingCommentId(null)}
+                >
+                  Cancel
+                </Button>
+              </>
+            ) : (
+              <>
+                <p>{comment.content}</p>
+                <small>{comment.author}</small>
+
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => handleEditComment(comment)}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => handleDeleteComment(comment.id)}
+                >
+                  Delete
+                </Button>
+              </>
+            )}
           </div>
         ))}
       </div>
