@@ -97,34 +97,66 @@ exports.createPost = async (req, res) => {
   }
 };
 
-exports.updatePost = (req, res) => {
-  const postId = parseInt(req.params.id);
-  const post = posts.find((p) => p.id === postId);
+exports.updatePost = async (req, res) => {
+  const postId = req.params.id;
+  const { title, content, tag } = req.body;
 
-  if (!post) {
-    return res.status(404).json({ message: "Post not found" });
-  }
-
-  // A user can update the post if:
-  // 1. They created the post, OR
-  // 2. They are an admin
-  const isOwner = post.authorEmail === req.user.email;
-  const isAdmin = req.user.role === "admin";
-
-  if (!isOwner && !isAdmin) {
+  // Featured posts are starter/demo content.
+  // They should not be edited through the API.
+  if (postId.startsWith("featured-")) {
     return res.status(403).json({
-      message: "You are not allowed to update this post",
+      message: "Featured posts cannot be edited",
     });
   }
 
-  const { title, content, tag } = req.body;
+  try {
+    // First, find the post in PostgreSQL
+    const existingPost = await db.query(
+      "SELECT * FROM posts WHERE id = $1",
+      [postId]
+    );
 
-  if (title) post.title = title;
-  if (content) post.content = content;
-  if (tag) post.tag = tag;
-  // if (author) post.author = author;
+    if (existingPost.rows.length === 0) {
+      return res.status(404).json({
+        message: "Post not found",
+      });
+    }
 
-  res.json(post);
+    const post = existingPost.rows[0];
+
+    // A user can update the post if:
+    // 1. They created the post, OR
+    // 2. They are an admin
+    const isOwner = post.author === req.user.email;
+    const isAdmin = req.user.role === "admin";
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({
+        message: "You are not allowed to update this post",
+      });
+    }
+
+    // Keep the old value if a field was not provided
+    const updatedTitle = title || post.title;
+    const updatedContent = content || post.content;
+    const updatedTag = tag || post.tag;
+
+    const result = await db.query(
+      `UPDATE posts
+       SET title = $1, content = $2, tag = $3
+       WHERE id = $4
+       RETURNING *`,
+      [updatedTitle, updatedContent, updatedTag, postId]
+    );
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Unable to update post",
+    });
+  }
 };
 
 exports.deletePost = (req, res) => {
