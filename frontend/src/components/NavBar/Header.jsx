@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, NavLink } from "react-router"; 
+import { Link, NavLink } from "react-router";
 import "./Header.css";
 import reflectionsLogo from "../../assets/Reflections-Logo.png";
 import chatIcon from "../../assets/chat_bubble.png";
@@ -26,7 +26,8 @@ function NavBar() {
     }
   }, []);
 
-  const getNavLinkClass = ({ isActive }) => isActive ? "nav-link active-link" : "nav-link";
+  const getNavLinkClass = ({ isActive }) =>
+    isActive ? "nav-link active-link" : "nav-link";
 
   return (
     <>
@@ -69,61 +70,85 @@ function NavBar() {
             <img src={chatIcon} className="icon" alt="Chat icon" />
           </NavLink>
           <NavLink to="/notifications" className="nav-link">
-            <img src={notificationsIcon} className="icon" alt="Notifications icon" />
+            <img
+              src={notificationsIcon}
+              className="icon"
+              alt="Notifications icon"
+            />
           </NavLink>
 
           {/* if logged in, show Profile Icon; otherwise, show Login Button */}
-          {user ? ( 
+          {user ? (
             <div className="profile-container">
               {/* Clicking the icon toggles a dropdown menu instead of navigating immediately */}
-              <img 
-                src={profileIcon} 
-                className="icon profile-toggle" 
-                alt="Profile icon" 
-                onClick={() => setShowDropdown(!showDropdown)} 
+              <span className="user-name">{user.username}</span>
+              <img
+                src={profileIcon}
+                className="icon profile-toggle"
+                alt="Profile icon"
+                onClick={() => setShowDropdown(!showDropdown)}
               />
-              
+              <button
+                type="button"
+                className="logout-button"
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  localStorage.removeItem("user");
+                  setUser(null);
+                  setShowDropdown(false);
+                }}
+              >
+                Logout
+              </button>
+
               {/* Dropdown Menu */}
               {showDropdown && (
                 <div className="profile-dropdown">
-                  <Link to="/profile" onClick={() => setShowDropdown(false)}>My Profile</Link>
-                  <Link to="/settings" onClick={() => setShowDropdown(false)}>Settings</Link>
+                  <Link to="/profile" onClick={() => setShowDropdown(false)}>
+                    My Profile
+                  </Link>
+                  <Link to="/settings" onClick={() => setShowDropdown(false)}>
+                    Settings
+                  </Link>
                   <hr />
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     className="logout-button"
-                    onClick={() => { 
-                      localStorage.removeItem("token"); 
-                      localStorage.removeItem("user"); 
-                      setUser(null); 
+                    onClick={() => {
+                      localStorage.removeItem("token");
+                      localStorage.removeItem("user");
+                      setUser(null);
                       setShowDropdown(false);
                     }}
-                  > 
-                    Logout 
-                  </button> 
+                  >
+                    Logout
+                  </button>
                 </div>
               )}
             </div>
-          ) : ( 
-            <button type="button" onClick={() => setIsLoginOpen(true)} className="login-button"> 
-              Login 
-            </button> 
+          ) : (
+            <button
+              type="button"
+              onClick={() => setIsLoginOpen(true)}
+              className="login-button"
+            >
+              Login
+            </button>
           )}
-        </div> 
-      </nav> 
+        </div>
+      </nav>
 
       {isLoginOpen && (
-        <LoginModal 
-          isOpen={isLoginOpen} 
-          onClose={() => setIsLoginOpen(false)} 
-          onLogin={(userData) => { 
-            setUser(userData); 
-            localStorage.setItem("user", JSON.stringify(userData)); 
+        <LoginModal
+          isOpen={isLoginOpen}
+          onClose={() => setIsLoginOpen(false)}
+          onLogin={(userData) => {
+            setUser(userData);
+            localStorage.setItem("user", JSON.stringify(userData));
             setIsLoginOpen(false); // Close the modal upon success
-          }} 
+          }}
         />
       )}
-
     </>
   );
 }
