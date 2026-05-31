@@ -372,3 +372,85 @@ exports.deleteComment = async (req, res) => {
     });
   }
 };
+
+exports.updateComment = async (req, res) => {
+  const { postId, commentId } = req.params;
+  const { content } = req.body;
+
+  if (!content) {
+    return res.status(400).json({
+      message: "Comment content is required",
+    });
+  }
+
+  // Featured post comments are stored in dummyPosts.js
+  if (postId.startsWith("featured-")) {
+    const post = posts.find((post) => post.id === postId);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    const comment = post.comments.find(
+      (comment) => comment.id === parseInt(commentId)
+    );
+
+    if (!comment) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+
+    const isOwner = comment.authorEmail === req.user.email;
+    const isAdmin = req.user.role === "admin";
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({
+        message: "You are not allowed to update this comment",
+      });
+    }
+
+    comment.content = content;
+
+    return res.json(comment);
+  }
+
+  try {
+    // Find the database comment first so we can check ownership
+    const existingComment = await db.query(
+      "SELECT * FROM comments WHERE id = $1 AND post_id = $2",
+      [commentId, postId]
+    );
+
+    if (existingComment.rows.length === 0) {
+      return res.status(404).json({
+        message: "Comment not found",
+      });
+    }
+
+    const comment = existingComment.rows[0];
+
+    const isOwner = comment.author === req.user.email;
+    const isAdmin = req.user.role === "admin";
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({
+        message: "You are not allowed to update this comment",
+      });
+    }
+
+    const result = await db.query(
+      `UPDATE comments
+       SET content = $1
+       WHERE id = $2 AND post_id = $3
+       RETURNING *`,
+      [content, commentId, postId]
+    );
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Unable to update comment",
+    });
+  }
+};
