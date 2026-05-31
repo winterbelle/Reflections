@@ -6,6 +6,7 @@ import chatIcon from "../../assets/chat_bubble.png";
 import notificationsIcon from "../../assets/notification_bell.png";
 import profileIcon from "../../assets/Default-Profile-Female.png";
 import LoginModal from "./LoginModal.jsx";
+import CreatePostModal from "../posts/CreatePostModal.jsx";
 
 function NavBar() {
   // Controls whether the login modal is visible
@@ -14,6 +15,8 @@ function NavBar() {
   const [user, setUser] = useState(null);
   // Controls the visibility of the profile dropdown menu
   const [showDropdown, setShowDropdown] = useState(false);
+  // Controls whether the create post modal is visible
+  const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
 
   // *Note* to check the localStorge in the dev tools when the app loads
   // This is where the user will be saved when they login
@@ -65,7 +68,20 @@ function NavBar() {
         </div>
 
         <div className="navbar-right">
-          <p>+ Share</p>
+          <button
+            type="button"
+            className="share-button"
+            onClick={() => {
+              if (!user) {
+                setIsLoginOpen(true);
+                return;
+              }
+
+              setIsCreatePostOpen(true);
+            }}
+          >
+            + Share
+          </button>
           <NavLink to="/chat" className="nav-link">
             <img src={chatIcon} className="icon" alt="Chat icon" />
           </NavLink>
@@ -88,18 +104,6 @@ function NavBar() {
                 alt="Profile icon"
                 onClick={() => setShowDropdown(!showDropdown)}
               />
-              <button
-                type="button"
-                className="logout-button"
-                onClick={() => {
-                  localStorage.removeItem("token");
-                  localStorage.removeItem("user");
-                  setUser(null);
-                  setShowDropdown(false);
-                }}
-              >
-                Logout
-              </button>
 
               {/* Dropdown Menu */}
               {showDropdown && (
@@ -148,6 +152,10 @@ function NavBar() {
             setIsLoginOpen(false); // Close the modal upon success
           }}
         />
+      )}
+
+      {isCreatePostOpen && (
+        <CreatePostModal onClose={() => setIsCreatePostOpen(false)} />
       )}
     </>
   );
