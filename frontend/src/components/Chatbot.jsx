@@ -114,7 +114,7 @@ function Chatbot() {
         type="button"
         onClick={toggleChatbot}
       >
-        {isChatOpen ? "Close Chat" : "💬 Chat"}
+        {isChatOpen ? "✕" : "💬 Chat"}
       </button>
 
       {/* Only render chatbot window if open */}
@@ -138,6 +138,48 @@ function Chatbot() {
 
             {/* Displays the chatbot conversation */}
             <div className="chatbot-messages">
+              {messages.length === 0 && (
+                <div className="chatbot-welcome">
+                  <p>
+                    Hi, I'm Kindred Companion. I'm here to provide parenting
+                    support, encouragement, and educational guidance.
+                  </p>
+                  <p>How can I help today?</p>
+
+                  <p>Try asking:</p>
+
+                  <div className="chatbot-suggestions">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setInput("How can I create a better bedtime routine?")
+                      }
+                    >
+                      🌙 Sleep routines
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setInput("How can I help a picky eater try new foods?")
+                      }
+                    >
+                      🍎 Picky eating
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setInput(
+                          "How can I help my child adjust to a new school?",
+                        )
+                      }
+                    >
+                      🎒 School transitions
+                    </button>
+                  </div>
+                </div>
+              )}
               {messages.map((message, index) => (
                 <div
                   key={index}
@@ -179,9 +221,15 @@ function Chatbot() {
 
             {/* Loading feedback while waiting for chatbot */}
             {isLoading && (
-              <p className="chatbot-loading">
-                Kindred Companion is thinking...
-              </p>
+              <div className="chatbot-loading">
+                <span>Kindred Companion is thinking</span>
+
+                <div className="chatbot-typing">
+                  <span className="chatbot-dot"></span>
+                  <span className="chatbot-dot"></span>
+                  <span className="chatbot-dot"></span>
+                </div>
+              </div>
             )}
           </div>
         </div>
