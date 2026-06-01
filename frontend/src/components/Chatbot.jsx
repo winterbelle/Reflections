@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import ReactMarkdown from "react-markdown";
 import "./Chatbot.css";
 
 function Chatbot() {
@@ -18,10 +19,21 @@ function Chatbot() {
   // Tracks loading state while waiting for chatbot response
   const [isLoading, setIsLoading] = useState(false);
 
+  // This reference points to the bottom of the chat.
+  // We use it to automatically scroll down whenever
+  // a new message is added to the conversation.
+  const messagesEndRef = useRef(null);
+
   //this useEffect saves chatbot messages to localStorage whenever the messages array changes
   useEffect(() => {
     localStorage.setItem("chatMessages", JSON.stringify(messages));
   }, [messages]);
+
+  // Keeps the chat scrolled to the newest message
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isLoading]);
+
   // Sends the user's message to the backend chatbot route
   const handleSendMessage = async () => {
     // Prevent empty submissions
@@ -48,9 +60,9 @@ function Chatbot() {
         headers: {
           "Content-Type": "application/json",
         },
-
         body: JSON.stringify({
           message: input,
+          history: [...messages, userMessage],
         }),
       });
 
@@ -112,18 +124,34 @@ function Chatbot() {
             className="chatbot-window"
             onClick={(event) => event.stopPropagation()}
           >
-            <h2>KindredParenting Chatbot</h2>
-            <button type="button" onClick={endChat}>
-              End Chat
-            </button>
+            <div className="chatbot-header">
+              <h2>Kindred Companion</h2>
+
+              <button
+                className="chatbot-end-button"
+                type="button"
+                onClick={endChat}
+              >
+                End Chat
+              </button>
+            </div>
 
             {/* Displays the chatbot conversation */}
             <div className="chatbot-messages">
               {messages.map((message, index) => (
-                <p key={index}>
-                  <strong>{message.role}:</strong> {message.content}
-                </p>
+                <div
+                  key={index}
+                  className={`chatbot-message ${
+                    message.role === "user"
+                      ? "chatbot-message-user"
+                      : "chatbot-message-assistant"
+                  }`}
+                >
+                  <ReactMarkdown>{message.content}</ReactMarkdown>
+                </div>
               ))}
+
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Chat input section */}
@@ -140,6 +168,7 @@ function Chatbot() {
                 type="text"
                 placeholder="Ask a parenting question..."
                 value={input}
+                disabled={isLoading}
                 onChange={(event) => setInput(event.target.value)}
               />
 
@@ -149,7 +178,11 @@ function Chatbot() {
             </form>
 
             {/* Loading feedback while waiting for chatbot */}
-            {isLoading && <p>Chatbot is thinking...</p>}
+            {isLoading && (
+              <p className="chatbot-loading">
+                Kindred Companion is thinking...
+              </p>
+            )}
           </div>
         </div>
       )}
