@@ -1,12 +1,9 @@
-// ========================================
-// PostgreSQL Database Connection
-// Handles the connection between Express and PostgreSQL
-// ========================================
+const { Pool } = require("@neondatabase/serverless");
+const ws = require("ws");
 
-const { Pool } = require("pg");
+// Tell the Neon serverless driver to use the 'ws' package for connections
+Pool.webSocketConstructor = ws;
 
-// Pool manages database connections for us.
-// It uses the DATABASE_URL stored in server/.env.
 const db = new Pool({
   connectionString: process.env.DATABASE_URL,
 });

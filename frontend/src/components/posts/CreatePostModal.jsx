@@ -49,7 +49,7 @@ function CreatePostModal({ onClose }) {
       setTag("");
       setContent("");
       setMessage("Post created successfully!");
-
+      window.dispatchEvent(new Event("postCreated"));
       onClose();
       navigate("/community");
     } catch (error) {

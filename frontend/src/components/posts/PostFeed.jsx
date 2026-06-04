@@ -6,29 +6,34 @@ import PostCard from "./PostCard";
 import PostPreview from "./PostPreview";
 
 const PostFeed = () => {
-    const [posts, setPosts] = useState([]);
-    useEffect(() => {
-        // Fetch posts from the server
-        const fetchPosts = async () => {
-            try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/posts`);
-                const data = await response.json();
-                setPosts(data);
-            } catch (error) {
-                console.error("Error fetching posts:", error);
-            }
-        };
+  const [posts, setPosts] = useState([]);
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/posts`);
 
-        fetchPosts();
-    }, []);
+      const data = await response.json();
 
-    return (
-        <div className="post-feed">
-            {posts.map((post) => (
-                <PostPreview key={post.id} post={post} />
-            ))}
-        </div>
-    );
+      setPosts(data);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
+  };
+  useEffect(() => {
+    fetchPosts();
+
+    window.addEventListener("postCreated", fetchPosts);
+
+    return () => {
+      window.removeEventListener("postCreated", fetchPosts);
+    };
+  }, []);
+  return (
+    <div className="post-feed">
+      {posts.map((post) => (
+        <PostPreview key={post.id} post={post} />
+      ))}
+    </div>
+  );
 };
 
 export default PostFeed;
