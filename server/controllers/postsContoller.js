@@ -16,9 +16,9 @@ exports.getPostById = (req, res) => {
 };
 
 exports.createPost = (req, res) => {
-  const { title, content, tag} = req.body;
+  const { title, content, mood, tag} = req.body;
 
-  if (!title || !content || !tag) {//I removed the author because this will be for the logged in author
+  if (!title || !content || !mood || !tag) {//I removed the author because this will be for the logged in author
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -26,6 +26,7 @@ exports.createPost = (req, res) => {
     id: posts.length + 1,
     title,
     content,
+    mood,
     tag,
     date: new Date().toISOString().split("T")[0],
     // The author comes from the logged-in user's JWT.
@@ -58,10 +59,11 @@ exports.updatePost = (req, res) => {
     });
   }
 
-  const { title, content, tag} = req.body;
+  const { title, content, mood, tag} = req.body;
 
   if (title) post.title = title;
   if (content) post.content = content;
+  if (mood) post.mood = mood;
   if (tag) post.tag = tag;
   // if (author) post.author = author;
 
