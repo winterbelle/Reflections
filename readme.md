@@ -1,6 +1,6 @@
 # 🌿 Reflections
 
-![Reflections Logo](./assets/Reflections-Logo.png)
+![Reflections Logo](./frontend/src/assets/Reflections-Logo.png)
 
 **A safe space for parents navigating the emotional, physical, and mental shifts after childbirth.**  
 
@@ -18,21 +18,24 @@ We believe postpartum care doesn’t end at the hospital doors. Our mission is t
 
 ## 🔮 Features (in progress)
 
-- 📝 **Journal entries** with mood tracking, prompts, and privacy options  
+- 📝 **Journal entries** with mood tracking, prompts, and privacy options
+<!-- 
 - 💬 **Whispers**: private, respectful 1:1 messaging  
+-->
 - 🫂 **Communities**: topic-based forums for parents, partners, and more  
-- 🧠 **Your Space**: personal dashboard for reflection, emotional check-ins, and saved content  
-- 📚 **Resources** for mental health, recovery, grief support, and more  
+- 🧠 **My Space**: personal dashboard for reflection, emotional check-ins, and saved content  
+- 📚 **Resources** for mental health, recovery, grief support, and more
+<!--
 - 🛡️ **Moderation tools** and community guidelines focused on safety and empathy
-
+-->
 ---
 
 ## 🛠️ Tech Stack
 
 - **Frontend**: React + Tailwind CSS  
 - **Backend**: Node.js + Express
-- **Database**: PostgreSQL (via Prisma ORM)
-- **Authentication**: Firebase Auth 
+- **Database**: PostgreSQL (via NEON)
+- **Authentication**: JWT Auth 
 - **Design**: Figma (see `/design` folder)  
 - **Architecture**: Modular MVC backend with clean RESTful API design
 - **Deployment**: [to be determined]
@@ -51,9 +54,13 @@ View designs in the `/design` folder for previews and style references.
 
 ## 👩‍💻 Built By
 
-Created by **Blanca**, a full-time Information Science student, full-time mom of two, and founder of *WinterBelle Studio* — a digital studio concept focused on emotionally intelligent spaces and community-driven tech.
+**Blanca**, a full-time Information Science student, full-time mom of two, and founder of *WinterBelle Studio* — a digital studio concept focused on emotionally intelligent spaces and community-driven tech.
 
 > "This isn't just a project. It's the platform I wish existed when I needed it most."
+
+**Jennifer**
+
+**Santiago**
 
 ---
 
