@@ -1,5 +1,3 @@
-// display the community feed
-
 import React from "react";
 import PostFeed from "../components/Posts/PostFeed";
 import "../components/Posts/PostFeed.css";
