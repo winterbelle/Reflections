@@ -4,24 +4,31 @@
 import React, { useEffect, useState } from "react";
 import PostCard from "./PostCard";
 import PostPreview from "./PostPreview";
-import Filter from "./Filter";
+import Filter from "./Filter"
+
 const PostFeed = () => {
-    const [posts, setPosts] = useState([]);
-    useEffect(() => {
-        // Fetch posts from the server
-        const fetchPosts = async () => {
-            try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/posts`);
-                const data = await response.json();
-                setPosts(data);
-            } catch (error) {
-                console.error("Error fetching posts:", error);
-            }
-        };
+  const [posts, setPosts] = useState([]);
+  // fetch call to the backend to grab the posts
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/posts`);
 
-        fetchPosts();
-    }, []);
+      const data = await response.json();
 
+      setPosts(data);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
+  };
+  useEffect(() => {
+    fetchPosts();
+
+    window.addEventListener("postCreated", fetchPosts);
+
+    return () => {
+      window.removeEventListener("postCreated", fetchPosts);
+    };
+  }, []);
     return (
         <>
         <div className="post-feed-container">
