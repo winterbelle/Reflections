@@ -109,6 +109,8 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  margin-bottom: 1rem;
+  scrollbar-width: none;
 }
 
 .chatbot-form {

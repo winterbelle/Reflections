@@ -1,0 +1,4 @@
+.community-page {
+    display: flex;
+    flex-direction: column;
+}

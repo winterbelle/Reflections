@@ -170,6 +170,7 @@ exports.deletePost = async (req, res) => {
     });
   }
 
+
   try {
     // First, find the post in PostgreSQL
     const existingPost = await db.query(
@@ -190,6 +191,15 @@ exports.deletePost = async (req, res) => {
     // 2. They are an admin
     const isOwner = post.author === req.user.email;
     const isAdmin = req.user.role === "admin";
+
+  const { title, content, tag} = req.body;
+
+  if (title) post.title = title;
+  if (content) post.content = content;
+//   if (mood) post.mood = mood;
+  if (tag) post.tag = tag;
+  // if (author) post.author = author;
+
 
     if (!isOwner && !isAdmin) {
       return res.status(403).json({
