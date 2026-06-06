@@ -4,23 +4,30 @@
 import React, { useEffect, useState } from "react";
 import PostCard from "./PostCard";
 import PostPreview from "./PostPreview";
-import Filter from "./Filter";
+//import Filter from "./Filter";
 const PostFeed = () => {
-    const [posts, setPosts] = useState([]);
-    useEffect(() => {
-        // Fetch posts from the server
-        const fetchPosts = async () => {
-            try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/posts`);
-                const data = await response.json();
-                setPosts(data);
-            } catch (error) {
-                console.error("Error fetching posts:", error);
-            }
-        };
+  const [posts, setPosts] = useState([]);
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/posts`);
 
-        fetchPosts();
-    }, []);
+      const data = await response.json();
+
+
+      setPosts(data);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
+  };
+  useEffect(() => {
+    fetchPosts();
+
+    window.addEventListener("postCreated", fetchPosts);
+
+    return () => {
+      window.removeEventListener("postCreated", fetchPosts);
+    };
+  }, []);
 
     return (
         <>
@@ -30,7 +37,7 @@ const PostFeed = () => {
             </div>
             <div className="post-feed-main-content">
                 <div className="post-feed-filters">
-                    <Filter />
+                   // <Filter />
                 </div>
                 <div className="post-feed-posts">
                     {posts.map((post) => (
@@ -41,6 +48,7 @@ const PostFeed = () => {
         </div>
         </>
     );
+
 };
 
 export default PostFeed;

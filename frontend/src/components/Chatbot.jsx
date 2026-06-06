@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import ReactMarkdown from "react-markdown";
 import "./Chatbot.css";
 
 function Chatbot() {
@@ -18,12 +19,21 @@ function Chatbot() {
   // Tracks loading state while waiting for chatbot response
   const [isLoading, setIsLoading] = useState(false);
 
-
+  // This reference points to the bottom of the chat.
+  // We use it to automatically scroll down whenever
+  // a new message is added to the conversation.
+  const messagesEndRef = useRef(null);
 
   //this useEffect saves chatbot messages to localStorage whenever the messages array changes
   useEffect(() => {
     localStorage.setItem("chatMessages", JSON.stringify(messages));
   }, [messages]);
+
+  // Keeps the chat scrolled to the newest message
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isLoading]);
+
   // Sends the user's message to the backend chatbot route
   const handleSendMessage = async () => {
     // Prevent empty submissions
@@ -50,9 +60,9 @@ function Chatbot() {
         headers: {
           "Content-Type": "application/json",
         },
-
         body: JSON.stringify({
           message: input,
+          history: [...messages, userMessage],
         }),
       });
 
@@ -88,6 +98,14 @@ function Chatbot() {
     setIsChatOpen((prevState) => !prevState);
   };
 
+  // Ends the current chat session
+  // Clears messages from state and localStorage
+  const endChat = () => {
+    setMessages([]);
+    localStorage.removeItem("chatMessages");
+    setIsChatOpen(false);
+  };
+
   return (
     <div className="chatbot-container">
       {/* Floating button used to open/close chatbot */}
@@ -96,7 +114,7 @@ function Chatbot() {
         type="button"
         onClick={toggleChatbot}
       >
-        {isChatOpen ? "Close Chat" : "💬 Chat"}
+        {isChatOpen ? "✕" : "💬 Chat"}
       </button>
 
       {/* Only render chatbot window if open */}
@@ -106,15 +124,76 @@ function Chatbot() {
             className="chatbot-window"
             onClick={(event) => event.stopPropagation()}
           >
-            <h2>KindredParenting Chatbot</h2>
+            <div className="chatbot-header">
+              <h2>Kindred Companion</h2>
+
+              <button
+                className="chatbot-end-button"
+                type="button"
+                onClick={endChat}
+              >
+                End Chat
+              </button>
+            </div>
 
             {/* Displays the chatbot conversation */}
             <div className="chatbot-messages">
+              {messages.length === 0 && (
+                <div className="chatbot-welcome">
+                  <p>
+                    Hi, I'm Kindred Companion. I'm here to provide parenting
+                    support, encouragement, and educational guidance.
+                  </p>
+                  <p>How can I help today?</p>
+
+                  <p>Try asking:</p>
+
+                  <div className="chatbot-suggestions">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setInput("How can I create a better bedtime routine?")
+                      }
+                    >
+                      🌙 Sleep routines
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setInput("How can I help a picky eater try new foods?")
+                      }
+                    >
+                      🍎 Picky eating
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setInput(
+                          "How can I help my child adjust to a new school?",
+                        )
+                      }
+                    >
+                      🎒 School transitions
+                    </button>
+                  </div>
+                </div>
+              )}
               {messages.map((message, index) => (
-                <p key={index}>
-                  <strong>{message.role}:</strong> {message.content}
-                </p>
+                <div
+                  key={index}
+                  className={`chatbot-message ${
+                    message.role === "user"
+                      ? "chatbot-message-user"
+                      : "chatbot-message-assistant"
+                  }`}
+                >
+                  <ReactMarkdown>{message.content}</ReactMarkdown>
+                </div>
               ))}
+
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Chat input section */}
@@ -131,6 +210,7 @@ function Chatbot() {
                 type="text"
                 placeholder="Ask a parenting question..."
                 value={input}
+                disabled={isLoading}
                 onChange={(event) => setInput(event.target.value)}
               />
 
@@ -140,7 +220,17 @@ function Chatbot() {
             </form>
 
             {/* Loading feedback while waiting for chatbot */}
-            {isLoading && <p>Chatbot is thinking...</p>}
+            {isLoading && (
+              <div className="chatbot-loading">
+                <span>Kindred Companion is thinking</span>
+
+                <div className="chatbot-typing">
+                  <span className="chatbot-dot"></span>
+                  <span className="chatbot-dot"></span>
+                  <span className="chatbot-dot"></span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
