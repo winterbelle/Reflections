@@ -2,21 +2,27 @@
 
 import React from "react";
 import { Avatar } from "@mui/material";
-import { formatDistanceToNow } from "date-fns";
 import ProfileAvatar from "./ProfileAvatar";
 
+import { formatDistanceToNow } from "date-fns";
+
 const PostCardHeader = ({ post }) => {
-    return (
-        <div className="post-header">
-        <ProfileAvatar username={post.author} />
-        <div className="post-author-info">
-          <span className="post-author">{post.author} </span>
-          <span className="post-date">
-            {formatDistanceToNow(new Date(post.date), { addSuffix: true })}
-          </span>
-        </div>
+  const postDate =
+    typeof post.date === "string" && post.date.endsWith("Z")
+      ? new Date(post.date)
+      : new Date(`${post.date}T00:00:00`);
+
+  return (
+    <div className="post-header">
+      <ProfileAvatar username={post.author} />
+      <div className="post-author-info">
+        <span className="post-author">{post.author} </span>
+        <span className="post-date">
+          {formatDistanceToNow(postDate, { addSuffix: true })}
+        </span>
       </div>
-    )
-}
+    </div>
+  );
+};
 
 export default PostCardHeader;

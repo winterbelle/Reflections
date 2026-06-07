@@ -8,13 +8,16 @@ const PostPreview = ({ post }) => {
   return (
     <div className="post-preview">
       <Link to={`/posts/${post.id}`}>
-      <PostCardHeader post={post} />
-        <h2>{post.title}</h2>
+        <PostCardHeader post={post} />
+        <h2>
+          {post.mood && <span>{post.mood} </span>}
+          {post.title}
+        </h2>
         <p>{post.content.substring(0, 200)}...</p>
         <span>{post.tag}</span>
       </Link>
     </div>
   );
-}
+};
 
 export default PostPreview;
