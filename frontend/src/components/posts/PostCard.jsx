@@ -99,13 +99,20 @@ const PostCard = () => {
         },
       );
 
-      const newComment = await response.json();
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error("Unable to add comment:", data);
+        alert(data.message || "Unable to add comment.");
+        return;
+      }
 
       // Add the new comment to the screen without forcing a page refresh
-      setComments((prevComments) => [...prevComments, newComment]);
+      setComments((prevComments) => [...prevComments, data]);
 
       // Clear input after successful submission
       setCommentInput("");
+      ``
     } catch (error) {
       console.error("Error adding comment:", error);
     }
@@ -302,7 +309,11 @@ const PostCard = () => {
         </div>
       ) : (
         <>
-          <h2 className="post-title">{post.title}</h2>
+          <h2 className="post-title">
+            {post.mood && <span className="post-mood">{post.mood} </span>}
+            {post.title}
+          </h2>
+
           <p className="post-content">{post.content}</p>
           <div className="post-mood">{moodEmojis[post.mood]} {post.mood}</div>
           <span className="post-tag">{post.tag && `#${post.tag}`}</span>
@@ -383,7 +394,7 @@ const PostCard = () => {
       </div>
 
       <div className="add-comment">
-        <input
+        <textarea
           type="text"
           placeholder="Add a comment..."
           value={commentInput}

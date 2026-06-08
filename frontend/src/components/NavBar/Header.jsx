@@ -39,12 +39,7 @@ function NavBar() {
             className="reflections-logo"
             alt="Reflections logo"
           />
-          <input
-            type="text"
-            name="search_input"
-            placeholder="Search..."
-            className="search-bar"
-          />
+          <span className="app-name">Kindred Parenting</span>
         </div>
 
         <div className="navbar-center">
@@ -54,12 +49,12 @@ function NavBar() {
           <NavLink to="/community" className="nav-link">
             Community
           </NavLink>
-          <NavLink to="/my-space" className="nav-link">
+          {/* <NavLink to="/my-space" className="nav-link">
             My Space
-          </NavLink>
-          <NavLink to="/whispers" className="nav-link">
+          </NavLink> */}
+          {/* <NavLink to="/whispers" className="nav-link">
             Whispers
-          </NavLink>
+          </NavLink> */}
           <NavLink to="/resources" className="nav-link">
             Resources
           </NavLink>
@@ -80,7 +75,7 @@ function NavBar() {
           >
             + Share
           </button>
-          <NavLink to="/chat" className="nav-link">
+          {/* <NavLink to="/chat" className="nav-link">
             <img src={chatIcon} className="icon" alt="Chat icon" />
           </NavLink>
           <NavLink to="/notifications" className="nav-link">
@@ -89,7 +84,7 @@ function NavBar() {
               className="icon"
               alt="Notifications icon"
             />
-          </NavLink>
+          </NavLink> */}
 
           {/* if logged in, show Profile Icon; otherwise, show Login Button */}
           {user ? (
@@ -106,13 +101,6 @@ function NavBar() {
               {/* Dropdown Menu */}
               {showDropdown && (
                 <div className="profile-dropdown">
-                  <Link to="/profile" onClick={() => setShowDropdown(false)}>
-                    My Profile
-                  </Link>
-                  <Link to="/settings" onClick={() => setShowDropdown(false)}>
-                    Settings
-                  </Link>
-                  <hr />
                   <button
                     type="button"
                     className="logout-button"
@@ -139,18 +127,15 @@ function NavBar() {
           )}
         </div>
       </nav>
-
       {isLoginOpen && (
-        <LoginModal
-          isOpen={isLoginOpen}
-          onClose={() => setIsLoginOpen(false)}
-          onLogin={(userData) => {
-            setUser(userData);
-            localStorage.setItem("user", JSON.stringify(userData));
-            setIsLoginOpen(false); // Close the modal upon success
-          }}
-        />
-      )}
+      <LoginModal
+        onClose={() => setIsLoginOpen(false)}
+        onLogin={(userData) => {
+          setUser(userData);
+          setIsLoginOpen(false);
+        }}
+      />
+)}
     </>
   );
 }
