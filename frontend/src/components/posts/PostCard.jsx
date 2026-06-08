@@ -290,7 +290,11 @@ const PostCard = () => {
         </div>
       ) : (
         <>
-          <h2 className="post-title">{post.title}</h2>
+          <h2 className="post-title">
+            {post.mood && <span className="post-mood">{post.mood} </span>}
+            {post.title}
+          </h2>
+
           <p className="post-content">{post.content}</p>
           <span className="post-tag">{post.tag}</span>
         </>

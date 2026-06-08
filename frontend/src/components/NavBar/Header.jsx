@@ -6,7 +6,7 @@ import chatIcon from "../../assets/chat_bubble.png";
 import notificationsIcon from "../../assets/notification_bell.png";
 import profileIcon from "../../assets/Default-Profile-Female.png";
 import LoginModal from "./LoginModal.jsx";
-import CreatePostModal from "../../Pages/CreatePostModal.jsx";
+import CreatePostModal from "../posts/CreatePostModal.jsx";
 
 function NavBar() {
   // Controls whether the login modal is visible

@@ -8,6 +8,7 @@ function CreatePostModal({ onClose }) {
   const [tag, setTag] = useState("");
   const [content, setContent] = useState("");
   const [message, setMessage] = useState("");
+  const [mood, setMood] = useState("😄");
 
   const handleCreatePost = async (event) => {
     event.preventDefault();
@@ -35,6 +36,7 @@ function CreatePostModal({ onClose }) {
           title,
           tag,
           content,
+          mood,
         }),
       });
 
@@ -49,6 +51,7 @@ function CreatePostModal({ onClose }) {
       setTag("");
       setContent("");
       setMessage("Post created successfully!");
+      setMood("😄");
       window.dispatchEvent(new Event("postCreated"));
       onClose();
       navigate("/community");
@@ -84,6 +87,21 @@ function CreatePostModal({ onClose }) {
               value={tag}
               onChange={(event) => setTag(event.target.value)}
             />
+          </label>
+
+          <label>
+            Mood
+            <select
+              value={mood}
+              onChange={(event) => setMood(event.target.value)}
+            >
+              <option value="😊">😊 Happy</option>
+              <option value="😔">😔 Sad</option>
+              <option value="😫">😫 Stressed</option>
+              <option value="😡">😡 Frustrated</option>
+              <option value="😴">😴 Tired</option>
+              <option value="🥰">🥰 Grateful</option>
+            </select>
           </label>
 
           <label>
