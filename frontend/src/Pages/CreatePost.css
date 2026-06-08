@@ -1,0 +1,274 @@
+/* ========================================
+   CREATE POST PAGE
+======================================== */
+
+.create-post-page {
+  min-height: 100vh;
+  background: #f8f5ff;
+  padding: 1rem;
+}
+
+.create-post-header {
+  max-width: 800px;
+  margin: 0 auto 1rem;
+  text-align: center;
+}
+
+.create-post-header h1 {
+  font-size: 2rem;
+  color: #D96E54;
+  margin-bottom: 0.25rem;
+  font-weight: 700;
+}
+
+.create-post-header p {
+  font-size: 0.95rem;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* ========================================
+   FORM CARD
+======================================== */
+
+.create-post-form {
+  max-width: 750px;
+  margin: 0 auto;
+  background: white;
+  padding-left: 50px;
+  padding-right: 90px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  border-radius: 20px;
+  border: 1px solid #ece7ff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Hide avatar to save space */
+
+.create-post-user {
+  display: none;
+}
+
+/* ========================================
+   FORM GROUPS
+======================================== */
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  text-align: left;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 0.35rem;
+}
+
+/* ========================================
+   INPUTS
+======================================== */
+
+.create-post-title,
+.tag-input,
+.create-post-textarea {
+  width: 100%;
+  border: 2px solid #e8e1ff;
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  font-size: 0.95rem;
+  background: white;
+  color: #333 !important;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.create-post-title:focus,
+.tag-input:focus,
+.create-post-textarea:focus {
+  outline: none;
+  border-color: #D96E54;
+  box-shadow: 0 0 0 4px rgba(140, 116, 255, 0.15);
+}
+
+.create-post-textarea {
+  min-height: 140px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* ========================================
+   MOOD SELECTOR
+======================================== */
+
+.mood-selector {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.mood-button {
+  width: 46px;
+  height: 46px;
+  border: 2px solid #e8e1ff;
+  border-radius: 12px;
+  background: white;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mood-button:hover {
+  border-color: #D96E54;
+  transform: translateY(-1px);
+}
+
+.mood-button.selected {
+  background: #D96E54;
+  border-color: #D96E54;
+  box-shadow: 0 4px 10px rgba(217, 110, 84, 0.15);
+}
+
+/* ========================================
+   TAGS
+======================================== */
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.tag-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #D96E54;
+  color: black;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.remove-tag-button {
+  background: transparent;
+  border: none;
+  color: #5a42c2;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 0;
+}
+
+.remove-tag-button:hover {
+  opacity: 0.7;
+}
+
+/* ========================================
+   ANONYMOUS SECTION
+======================================== */
+
+.anonymous-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.anonymous-checkbox input {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.anonymous-note {
+  margin-left: 1.8rem;
+  font-size: 0.8rem;
+  color: #777;
+}
+
+/* ========================================
+   BUTTONS
+======================================== */
+
+.create-post-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.cancel-button {
+  border: none;
+  background: #ececec;
+  color: #444;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.cancel-button:hover {
+  background: #dddddd;
+}
+
+.create-post-button {
+  border: none;
+  background: #D96E54;
+  color: white;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.create-post-button:hover {
+  background: #D96E54;
+  transform: translateY(-1px);
+}
+
+.create-post-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 768px) {
+  .create-post-page {
+    padding: 0.75rem;
+  }
+
+  .create-post-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .create-post-form {
+    padding: 1rem;
+  }
+
+  .create-post-actions {
+    flex-direction: column;
+  }
+
+  .cancel-button,
+  .create-post-button {
+    width: 100%;
+  }
+
+  .mood-selector {
+    justify-content: center;
+  }
+}

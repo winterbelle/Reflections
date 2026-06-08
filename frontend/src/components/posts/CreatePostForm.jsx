@@ -110,10 +110,6 @@ const CreatePostForm = () => {
 
   return (
     <form onSubmit={handleSubmit} className="create-post-form">
-      <div className="create-post-user">
-        <ProfileAvatar username="User" />
-      </div>
-
       <div className="form-group">
         <label htmlFor="title">Title</label>
 
@@ -146,24 +142,6 @@ const CreatePostForm = () => {
             </button>
           ))}
         </div>
-      </div>
-
-      <div className="form-group">
-        <label className="anonymous-checkbox">
-          <input
-            type="checkbox"
-            checked={isAnonymous}
-            onChange={(e) =>
-              setIsAnonymous(e.target.checked)
-            }
-          />
-
-          Post anonymously
-        </label>
-
-        <small className="anonymous-note">
-          Your name will not be displayed to other users.
-        </small>
       </div>
 
       <div className="form-group">
@@ -215,6 +193,24 @@ const CreatePostForm = () => {
           rows={8}
           required
         />
+      </div>
+
+      <div className="form-group">
+        <label className="anonymous-checkbox">
+          <input
+            type="checkbox"
+            checked={isAnonymous}
+            onChange={(e) =>
+              setIsAnonymous(e.target.checked)
+            }
+          />
+
+          Post anonymously
+        </label>
+
+        <small className="anonymous-note">
+          Your name will not be displayed to other users.
+        </small>
       </div>
 
       <div className="create-post-actions">

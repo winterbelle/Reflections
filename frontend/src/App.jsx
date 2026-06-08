@@ -5,7 +5,7 @@ import Header from './components/NavBar/Header.jsx'
 import Community from './Pages/community.jsx'
 import PostCard from './components/posts/PostCard.jsx';
 import Chatbot from './components/Chatbot.jsx';
-import CreatePost from './Pages/CreatPost.jsx';
+import CreatePost from './Pages/CreatePost.jsx';
 
 
 function App() {

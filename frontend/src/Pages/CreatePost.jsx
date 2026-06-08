@@ -1,4 +1,5 @@
 import CreatePostForm from "../components/posts/CreatePostForm";
+import "./CreatePost.css";
 
 const CreatePost = () => {
     return (
