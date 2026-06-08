@@ -3,8 +3,6 @@
 // Handles:
 // - user registration
 // - user login
-// - demo/admin accounts
-// - JWT tokens with user roles
 // ========================================
 
 const express = require("express");
@@ -12,38 +10,27 @@ const router = express.Router();
 
 // Import bcrypt for password hashing
 const bcrypt = require("bcrypt");
-const authMiddleware = require("../middleware/authMiddleware");
 const jwt = require("jsonwebtoken");
 
 // Temporary in-memory users array
 // Later this will become a real database
 const users = [];
 
-// Demo accounts
-// Allows visitors, recruiters, judges, and admins
-// to explore the application with different permissions
-const createDemoUsers = async () => {
-  const demoHashedPassword = await bcrypt.hash("demo123", 10);
-  const adminHashedPassword = await bcrypt.hash("admin123", 10);
+// Demo account
+// Allows visitors, recruiters, and judges
+// to explore the application without signing up
+const createDemoUser = async () => {
+  const hashedPassword = await bcrypt.hash("demo123", 10);
 
   users.push({
     id: 1,
     username: "Demo Parent",
     email: "demo@kindredparenting.com",
-    password: demoHashedPassword,
-    role: "user",
-  });
-
-  users.push({
-    id: 2,
-    username: "Admin User",
-    email: "admin@kindredparenting.com",
-    password: adminHashedPassword,
-    role: "admin",
+    password: hashedPassword,
   });
 };
 
-createDemoUsers();
+createDemoUser();
 
 /*
 ========================================
@@ -85,7 +72,6 @@ router.post("/register", async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      role: "user",
     };
 
     // Save user to temporary array
@@ -98,7 +84,6 @@ router.post("/register", async (req, res) => {
         id: newUser.id,
         username: newUser.username,
         email: newUser.email,
-        role: newUser.role,
       },
     });
   } catch (error) {
@@ -156,9 +141,8 @@ router.post("/login", async (req, res) => {
       {
         id: user.id,
         email: user.email,
-        role: user.role,
       },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || "dev_secret_key",
       {
         expiresIn: "1h",
       },
@@ -171,7 +155,6 @@ router.post("/login", async (req, res) => {
         id: user.id,
         username: user.username,
         email: user.email,
-        role: user.role,
       },
     });
   } catch (error) {
@@ -181,21 +164,6 @@ router.post("/login", async (req, res) => {
       message: "Server error",
     });
   }
-});
-
-/*
-========================================
-GET /auth/profile
-Purpose:
-Protected route that only works with a valid JWT
-========================================
-*/
-
-router.get("/profile", authMiddleware, (req, res) => {
-  res.status(200).json({
-    message: "Protected profile route accessed successfully",
-    user: req.user,
-  });
 });
 
 module.exports = router;

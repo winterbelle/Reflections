@@ -52,7 +52,7 @@ View designs in the `/design` folder for previews and style references.
 
 ---
 
-## 👩‍💻👩🏾‍💻👨🏻‍💻 Built By
+## 👩‍💻 Built By
 
 **Blanca**, a full-time Information Science student, full-time mom of two, and founder of *WinterBelle Studio* — a digital studio concept focused on emotionally intelligent spaces and community-driven tech.
 
