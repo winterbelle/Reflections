@@ -139,6 +139,15 @@ function NavBar() {
           )}
         </div>
       </nav>
+      {isLoginOpen && (
+      <LoginModal
+        onClose={() => setIsLoginOpen(false)}
+        onLogin={(userData) => {
+          setUser(userData);
+          setIsLoginOpen(false);
+        }}
+      />
+)}
     </>
   );
 }
