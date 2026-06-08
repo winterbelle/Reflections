@@ -13,8 +13,8 @@ const PostPreview = ({ post }) => {
           {post.mood && <span>{post.mood} </span>}
           {post.title}
         </h2>
-        <p>{post.content.substring(0, 200)}...</p>
-        <span>{post.tag}</span>
+        <p className="post-description">{post.content.substring(0, 200)}...</p>
+        <span className="post-tag">{post.tag}</span>
       </Link>
     </div>
   );

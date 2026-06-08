@@ -1,0 +1,13 @@
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.post-author {
+    font-weight: bold;
+}
+
+.post-date {
+    font-style: italic;
+}
