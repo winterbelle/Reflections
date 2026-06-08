@@ -139,18 +139,6 @@ function NavBar() {
           )}
         </div>
       </nav>
-
-      {isLoginOpen && (
-        <LoginModal
-          isOpen={isLoginOpen}
-          onClose={() => setIsLoginOpen(false)}
-          onLogin={(userData) => {
-            setUser(userData);
-            localStorage.setItem("user", JSON.stringify(userData));
-            setIsLoginOpen(false); // Close the modal upon success
-          }}
-        />
-      )}
     </>
   );
 }

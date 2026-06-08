@@ -17,12 +17,12 @@ exports.getAllPosts = async (req, res) => {
       source: "database",
     }));
 
-
-
     // Combine featured dummy posts with real database posts
     // I am thinking "Featured posts" will help the site look populated for demo/presentation
     // Database posts will show real content created by users
     const allPosts = [...featuredPosts, ...databasePosts];
+
+    allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     res.json(allPosts);
   } catch (error) {
@@ -38,9 +38,7 @@ exports.getPostById = async (req, res) => {
   const postId = req.params.id;
 
   // Check featured posts first
-  const featuredPost = posts.find(
-    (post) => post.id === postId
-  );
+  const featuredPost = posts.find((post) => post.id === postId);
 
   if (featuredPost) {
     return res.json(featuredPost);
@@ -48,10 +46,9 @@ exports.getPostById = async (req, res) => {
 
   try {
     // If not a featured post, check PostgreSQL
-    const result = await db.query(
-      "SELECT * FROM posts WHERE id = $1",
-      [postId]
-    );
+    const result = await db.query("SELECT * FROM posts WHERE id = $1", [
+      postId,
+    ]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({
@@ -70,7 +67,7 @@ exports.getPostById = async (req, res) => {
 };
 
 exports.createPost = async (req, res) => {
-  const { title, content, tag } = req.body;
+  const { title, content, tag, mood } = req.body;
 
   if (!title || !content || !tag) {
     //I removed the author because this will be for the logged in author
@@ -81,10 +78,10 @@ exports.createPost = async (req, res) => {
     // Save the new post to PostgreSQL
     // RETURNING * gives us the post that was just created
     const result = await db.query(
-      `INSERT INTO posts (title, content, tag, author)
-       VALUES ($1, $2, $3, $4)
-       RETURNING *`,
-      [title, content, tag, req.user.email],
+      `INSERT INTO posts (title, content, tag, mood, author)
+   VALUES ($1, $2, $3, $4, $5)
+   RETURNING *`,
+      [title, content, tag, mood, req.user.email],
     );
 
     res.status(201).json(result.rows[0]);
@@ -111,10 +108,9 @@ exports.updatePost = async (req, res) => {
 
   try {
     // First, find the post in PostgreSQL
-    const existingPost = await db.query(
-      "SELECT * FROM posts WHERE id = $1",
-      [postId]
-    );
+    const existingPost = await db.query("SELECT * FROM posts WHERE id = $1", [
+      postId,
+    ]);
 
     if (existingPost.rows.length === 0) {
       return res.status(404).json({
@@ -146,7 +142,7 @@ exports.updatePost = async (req, res) => {
        SET title = $1, content = $2, tag = $3
        WHERE id = $4
        RETURNING *`,
-      [updatedTitle, updatedContent, updatedTag, postId]
+      [updatedTitle, updatedContent, updatedTag, postId],
     );
 
     res.json(result.rows[0]);
@@ -172,10 +168,9 @@ exports.deletePost = async (req, res) => {
 
   try {
     // First, find the post in PostgreSQL
-    const existingPost = await db.query(
-      "SELECT * FROM posts WHERE id = $1",
-      [postId]
-    );
+    const existingPost = await db.query("SELECT * FROM posts WHERE id = $1", [
+      postId,
+    ]);
 
     if (existingPost.rows.length === 0) {
       return res.status(404).json({
@@ -243,10 +238,9 @@ exports.addCommentToPost = async (req, res) => {
 
   try {
     // Make sure the database post exists before adding a comment
-    const existingPost = await db.query(
-      "SELECT * FROM posts WHERE id = $1",
-      [postId]
-    );
+    const existingPost = await db.query("SELECT * FROM posts WHERE id = $1", [
+      postId,
+    ]);
 
     if (existingPost.rows.length === 0) {
       return res.status(404).json({ message: "Post not found" });
@@ -257,7 +251,7 @@ exports.addCommentToPost = async (req, res) => {
       `INSERT INTO comments (post_id, content, author)
        VALUES ($1, $2, $3)
        RETURNING *`,
-      [postId, content, req.user.email]
+      [postId, content, req.user.email],
     );
 
     res.status(201).json(result.rows[0]);
@@ -288,7 +282,7 @@ exports.getCommentsByPostId = async (req, res) => {
     // Get comments connected to this database post
     const result = await db.query(
       "SELECT * FROM comments WHERE post_id = $1 ORDER BY date ASC",
-      [postId]
+      [postId],
     );
 
     res.json(result.rows);
@@ -313,7 +307,7 @@ exports.deleteComment = async (req, res) => {
     }
 
     const commentIndex = post.comments.findIndex(
-      (comment) => comment.id === parseInt(commentId)
+      (comment) => comment.id === parseInt(commentId),
     );
 
     if (commentIndex === -1) {
@@ -340,7 +334,7 @@ exports.deleteComment = async (req, res) => {
     // Find the database comment first so we can check ownership
     const existingComment = await db.query(
       "SELECT * FROM comments WHERE id = $1 AND post_id = $2",
-      [commentId, postId]
+      [commentId, postId],
     );
 
     if (existingComment.rows.length === 0) {
@@ -392,7 +386,7 @@ exports.updateComment = async (req, res) => {
     }
 
     const comment = post.comments.find(
-      (comment) => comment.id === parseInt(commentId)
+      (comment) => comment.id === parseInt(commentId),
     );
 
     if (!comment) {
@@ -417,7 +411,7 @@ exports.updateComment = async (req, res) => {
     // Find the database comment first so we can check ownership
     const existingComment = await db.query(
       "SELECT * FROM comments WHERE id = $1 AND post_id = $2",
-      [commentId, postId]
+      [commentId, postId],
     );
 
     if (existingComment.rows.length === 0) {
@@ -442,7 +436,7 @@ exports.updateComment = async (req, res) => {
        SET content = $1
        WHERE id = $2 AND post_id = $3
        RETURNING *`,
-      [content, commentId, postId]
+      [content, commentId, postId],
     );
 
     res.json(result.rows[0]);
