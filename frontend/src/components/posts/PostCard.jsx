@@ -99,13 +99,20 @@ const PostCard = () => {
         },
       );
 
-      const newComment = await response.json();
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error("Unable to add comment:", data);
+        alert(data.message || "Unable to add comment.");
+        return;
+      }
 
       // Add the new comment to the screen without forcing a page refresh
-      setComments((prevComments) => [...prevComments, newComment]);
+      setComments((prevComments) => [...prevComments, data]);
 
       // Clear input after successful submission
       setCommentInput("");
+      ``
     } catch (error) {
       console.error("Error adding comment:", error);
     }
