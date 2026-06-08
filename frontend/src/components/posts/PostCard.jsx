@@ -179,7 +179,7 @@ const PostCard = () => {
           },
         },
       );
-
+ 
       setComments((prevComments) =>
         prevComments.filter((comment) => comment.id !== commentId),
       );
@@ -256,6 +256,18 @@ const PostCard = () => {
       console.error("Error deleting post:", error);
     }
   };
+
+  const moodEmojis = {
+    happy: "😊",
+    sad: "😔",
+    anxious: "😰",
+    exhausted: "🫩",
+    loved: "❤️",
+    frustrated: "😡",
+  };
+
+  console.log("Rendered Post:", post);
+
   return (
     <div className="post-card">
       <PostCardHeader post={post} />
@@ -303,7 +315,8 @@ const PostCard = () => {
           </h2>
 
           <p className="post-content">{post.content}</p>
-          <span className="post-tag">{post.tag}</span>
+          <div className="post-mood">{moodEmojis[post.mood]} {post.mood}</div>
+          <span className="post-tag">{post.tag && `#${post.tag}`}</span>
         </>
       )}
 

@@ -11,17 +11,16 @@ const PostCardHeader = ({ post }) => {
     typeof post.date === "string" && post.date.endsWith("Z")
       ? new Date(post.date)
       : new Date(`${post.date}T00:00:00`);
-
-  return (
-    <div className="post-header">
-      <ProfileAvatar username={post.author} />
-      <div className="post-author-info">
-        <span className="post-author">{post.author} </span>
-        <span className="post-date">
-          {formatDistanceToNow(postDate, { addSuffix: true })}
-        </span>
+    return (
+        <div className="post-header">
+          <ProfileAvatar username={post.is_anonymous ? "Anonymous" : post.author} />
+          <div className="post-author-info">
+            <span className="post-author">{post.is_anonymous ? "Anonymous" : post.author} </span>
+            <span className="post-date">
+              {formatDistanceToNow(new Date(post.date), { addSuffix: true })}
+            </span>
+          </div>
       </div>
-    </div>
   );
 };
 
