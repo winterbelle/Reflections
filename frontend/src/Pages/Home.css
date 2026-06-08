@@ -1,0 +1,140 @@
+.home-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+}
+
+.hero-section {
+  text-align: center;
+  margin-bottom: 4rem;
+
+  background-color: #fffaf7;
+  border: 1px solid #ead8cf;
+  border-radius: 24px;
+  padding: 4rem 2rem;
+}
+
+.hero-badge {
+  display: inline-block;
+  background-color: #f4e7df;
+  color: #6f6478;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+}
+
+.hero-section h1 {
+  font-size: 3.4rem;
+  color: #6f6478;
+  margin-bottom: 1rem;
+  line-height: 1.1;
+}
+
+.hero-section p {
+  max-width: 720px;
+  margin: 0 auto;
+  color: #666;
+  line-height: 1.8;
+  font-size: 1.15rem;
+}
+
+.hero-buttons {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.hero-button {
+  display: inline-block;
+  padding: 14px 28px;
+  border-radius: 999px;
+  background-color: #6f6478;
+  color: white;
+  text-decoration: none;
+  transition: 0.2s ease;
+  font-weight: 600;
+}
+
+.hero-button:hover {
+  transform: translateY(-2px);
+}
+
+.hero-button.secondary {
+  background-color: #8a7f91;
+}
+
+.stats-section {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 4rem;
+}
+
+.stats-section div {
+  text-align: center;
+  background-color: #fffaf7;
+  border: 1px solid #ead8cf;
+  border-radius: 18px;
+  padding: 1.5rem;
+}
+
+.stats-section h3 {
+  font-size: 2rem;
+  color: #d96e54;
+  margin-bottom: 0.25rem;
+}
+
+.stats-section p {
+  color: #6f6478;
+  margin: 0;
+}
+
+.features-section {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.feature-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(111, 100, 120, 0.1);
+}
+
+.feature-card h3 {
+  color: #6f6478;
+  margin-bottom: 0.75rem;
+}
+
+.feature-card p {
+  color: #6f6478;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .hero-section h1 {
+    font-size: 2.4rem;
+  }
+
+  .hero-buttons,
+  .stats-section,
+  .features-section {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+}
+
+.stats-section div,
+.feature-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stats-section div:hover,
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(111, 100, 120, 0.15);
+}
