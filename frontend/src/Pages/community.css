@@ -1,4 +1,10 @@
 .community-page {
     display: flex;
     flex-direction: column;
+
+    h1 {
+        color: #d96e54;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
 }

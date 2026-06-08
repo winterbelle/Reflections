@@ -33,9 +33,6 @@ const PostFeed = () => {
   return (
     <>
       <div className="post-feed-container">
-        <div className="post-feed-header">
-          <h2>Component to make a post goes here</h2>
-        </div>
         <div className="post-feed-main-content">
           <div className="post-feed-filters">
             <Filter />

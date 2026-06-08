@@ -39,12 +39,7 @@ function NavBar() {
             className="reflections-logo"
             alt="Reflections logo"
           />
-          <input
-            type="text"
-            name="search_input"
-            placeholder="Search..."
-            className="search-bar"
-          />
+          <span className="app-name">Kindred Parenting</span>
         </div>
 
         <div className="navbar-center">
@@ -80,7 +75,7 @@ function NavBar() {
           >
             + Share
           </button>
-          <NavLink to="/chat" className="nav-link">
+          {/* <NavLink to="/chat" className="nav-link">
             <img src={chatIcon} className="icon" alt="Chat icon" />
           </NavLink>
           <NavLink to="/notifications" className="nav-link">
@@ -89,7 +84,7 @@ function NavBar() {
               className="icon"
               alt="Notifications icon"
             />
-          </NavLink>
+          </NavLink> */}
 
           {/* if logged in, show Profile Icon; otherwise, show Login Button */}
           {user ? (
@@ -106,13 +101,6 @@ function NavBar() {
               {/* Dropdown Menu */}
               {showDropdown && (
                 <div className="profile-dropdown">
-                  <Link to="/profile" onClick={() => setShowDropdown(false)}>
-                    My Profile
-                  </Link>
-                  <Link to="/settings" onClick={() => setShowDropdown(false)}>
-                    Settings
-                  </Link>
-                  <hr />
                   <button
                     type="button"
                     className="logout-button"
