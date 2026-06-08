@@ -54,12 +54,12 @@ function NavBar() {
           <NavLink to="/community" className="nav-link">
             Community
           </NavLink>
-          <NavLink to="/my-space" className="nav-link">
+          {/* <NavLink to="/my-space" className="nav-link">
             My Space
-          </NavLink>
-          <NavLink to="/whispers" className="nav-link">
+          </NavLink> */}
+          {/* <NavLink to="/whispers" className="nav-link">
             Whispers
-          </NavLink>
+          </NavLink> */}
           <NavLink to="/resources" className="nav-link">
             Resources
           </NavLink>
