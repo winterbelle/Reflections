@@ -5,6 +5,7 @@ import Header from './components/NavBar/Header.jsx'
 import Community from './Pages/community.jsx'
 import PostCard from './components/posts/PostCard.jsx';
 import Chatbot from './components/Chatbot.jsx';
+import CreatePost from './Pages/CreatPost.jsx';
 
 
 function App() {
@@ -16,8 +17,8 @@ function App() {
       <Routes>
         <Route path="/" element={<h1>Home</h1>} />
         <Route path="/community" element={<Community />} />
-
         <Route path="/posts/:id" element={<PostCard />} />
+        <Route path="/create-post" element={<CreatePost />} />
       </Routes>
       <Chatbot />
       </BrowserRouter>
