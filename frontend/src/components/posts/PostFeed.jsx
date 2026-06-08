@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import PostCard from "./PostCard";
 import PostPreview from "./PostPreview";
 import Filter from "./Filter";
-
+import "./PostCard.css";
 const PostFeed = () => {
   const [posts, setPosts] = useState([]);
 

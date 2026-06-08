@@ -381,7 +381,7 @@ const PostCard = () => {
       </div>
 
       <div className="add-comment">
-        <input
+        <textarea
           type="text"
           placeholder="Add a comment..."
           value={commentInput}
